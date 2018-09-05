@@ -222,6 +222,7 @@ class MUIDataTable extends React.Component {
         filter: true,
         sort: true,
         sortDirection: null,
+        searchable: true
       };
 
       if (typeof column === "object") {
@@ -343,8 +344,9 @@ class MUIDataTable extends React.Component {
 
       const columnVal = columnValue === null ? "" : columnValue.toString();
       const searchCase = !this.options.caseSensitive ? columnVal.toLowerCase() : columnVal.toString();
+      const isSearchable = columns[index].searchable
 
-      if (searchText && searchCase.indexOf(searchText.toLowerCase()) >= 0) {
+      if (isSearchable && searchText && searchCase.indexOf(searchText.toLowerCase()) >= 0) {
         isSearchFound = true;
       }
     }

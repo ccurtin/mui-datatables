@@ -56,6 +56,7 @@ class MUIDataTable extends React.Component {
             display: PropTypes.bool,
             filter: PropTypes.bool,
             sort: PropTypes.bool,
+            searchable: PropTypes.bool,
             customHeadRender: PropTypes.func,
             customBodyRender: PropTypes.func,
           }),

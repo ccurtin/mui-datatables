@@ -48,15 +48,19 @@ class MUIDataTableBody extends React.Component {
     const fromIndex = page === 0 ? 0 : page * rowsPerPage;
     const toIndex = Math.min(count, (page + 1) * rowsPerPage);
 
-    if (page > totalPages && totalPages !== 0) {
-      throw new Error(
-        "Provided options.page of `" +
-          page +
-          "` is greater than the total available page length of `" +
-          totalPages +
-          "`",
-      );
-    }
+    // TODO::::: FIX THIS BUG: https://github.com/gregnb/mui-datatables/issues/196
+    // Shouldn't be thrown when: user searches for specific text and gets a number of matches back that exceeds or coincides with the `rowsPerPage`.
+    // NOTE: This ONLY happens if--BEFORE the search--the user is on a page to exceeds the number of pages that should be returned after search results.
+    // so if they are on page 3 and search for something which only returns 2 pages of results, the error will be thrown.
+    // if (page > totalPages && totalPages !== 0) {
+    //   throw new Error(
+    //     "Provided options.page of `" +
+    //       page +
+    //       "` is greater than the total available page length of `" +
+    //       totalPages +
+    //       "`",
+    //   );
+    // }
 
     for (let rowIndex = fromIndex; rowIndex < count && rowIndex < toIndex; rowIndex++) {
       if (data[rowIndex] !== undefined) rows.push(data[rowIndex]);

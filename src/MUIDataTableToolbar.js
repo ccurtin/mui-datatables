@@ -202,7 +202,7 @@ class MUIDataTableToolbar extends React.Component {
             false
           )}
           {options.viewColumns ? (
-            <MUIPopover refExit={this.setActiveIcon.bind(null)} container={tableRef}>
+            <MUIPopover container={tableRef}>
               <MUIPopoverTarget>
                 <IconButton
                   aria-label={viewColumns}
@@ -226,7 +226,7 @@ class MUIDataTableToolbar extends React.Component {
             false
           )}
           {options.filter ? (
-            <MUIPopover refExit={this.setActiveIcon.bind(null)} container={tableRef}>
+            <MUIPopover container={tableRef}>
               <MUIPopoverTarget>
                 <IconButton
                   aria-label={filterTable}

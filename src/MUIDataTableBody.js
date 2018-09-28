@@ -86,7 +86,7 @@ class MUIDataTableBody extends React.Component {
   };
 
   render() {
-    const { classes, columns, options, onRowClick } = this.props;
+    const { classes, columns, options } = this.props;
     const tableRows = this.buildRows();
 
     return (
@@ -96,7 +96,7 @@ class MUIDataTableBody extends React.Component {
             <MUIDataTableBodyRow
               options={options}
               rowSelected={options.selectableRows ? this.isRowSelected(rowIndex) : false}
-              onClick={() => onRowClick(row, { rowIndex, dataIndex })}
+              onClick={options.onRowClick ? options.onRowClick.bind(null, row, { rowIndex, dataIndex }) : null}
               id={"MUIDataTableBodyRow-" + dataIndex}
               key={rowIndex}>
               {options.selectableRows ? (

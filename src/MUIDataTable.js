@@ -56,6 +56,7 @@ class MUIDataTable extends React.Component {
             display: PropTypes.bool,
             filter: PropTypes.bool,
             sort: PropTypes.bool,
+            searchable: PropTypes.bool,
             customHeadRender: PropTypes.func,
             customBodyRender: PropTypes.func,
           }),
@@ -85,6 +86,7 @@ class MUIDataTable extends React.Component {
       rowsPerPageOptions: PropTypes.array,
       filter: PropTypes.bool,
       sort: PropTypes.bool,
+      customSort: PropTypes.func,
       search: PropTypes.bool,
       print: PropTypes.bool,
       viewColumns: PropTypes.bool,
@@ -221,6 +223,7 @@ class MUIDataTable extends React.Component {
         filter: true,
         sort: true,
         sortDirection: null,
+        searchable: true
       };
 
       if (typeof column === "object") {
@@ -342,8 +345,9 @@ class MUIDataTable extends React.Component {
 
       const columnVal = columnValue === null ? "" : columnValue.toString();
       const searchCase = !this.options.caseSensitive ? columnVal.toLowerCase() : columnVal.toString();
+      const isSearchable = columns[index].searchable
 
-      if (searchText && searchCase.indexOf(searchText.toLowerCase()) >= 0) {
+      if (isSearchable && searchText && searchCase.indexOf(searchText.toLowerCase()) >= 0) {
         isSearchFound = true;
       }
     }
@@ -641,7 +645,7 @@ class MUIDataTable extends React.Component {
           }
 
           return {
-            curSelectedRows: selectedRows,
+            curSelectedRows: newRows,
             selectedRows: {
               data: newRows,
               lookup: selectedMap,
@@ -650,8 +654,7 @@ class MUIDataTable extends React.Component {
         },
         () => {
           if (this.options.onRowsSelect) {
-            console.log(this.state.curSelectedRows);
-            this.options.onRowsSelect(this.state.curSelectedRows.data[0], this.state.selectedRows.data);
+            this.options.onRowsSelect(this.state.curSelectedRows, this.state.selectedRows.data);
           }
         },
       );
@@ -703,13 +706,17 @@ class MUIDataTable extends React.Component {
   }
 
   sortTable(data, col, order) {
-    let sortedData = data.map((row, sIndex) => ({
+    let dataSrc = this.options.customSort ? this.options.customSort(data, col, order) : data;
+
+    let sortedData = dataSrc.map((row, sIndex) => ({
       data: row.data[col],
       position: sIndex,
       rowSelected: this.state.selectedRows.lookup[sIndex] ? true : false,
     }));
 
-    sortedData.sort(this.sortCompare(order));
+    if (!this.options.customSort) {
+      sortedData.sort(this.sortCompare(order));
+    }
 
     let tableData = [];
     let selectedRows = [];
@@ -776,7 +783,7 @@ class MUIDataTable extends React.Component {
             toggleViewColumn={this.toggleViewColumn}
           />
         )}
-        <MUIDataTableFilterList options={this.options} filterList={filterList} filterUpdate={this.filterUpdate} />
+        <MUIDataTableFilterList options={this.options} filterList={filterList} filterUpdate={this.filterUpdate} columns={columns}/>
         <div
           style={{ position: "relative" }}
           className={this.options.responsive === "scroll" ? classes.responsiveScroll : null}>
@@ -800,7 +807,6 @@ class MUIDataTable extends React.Component {
             />
             <MUIDataTableBody
               data={this.state.displayData}
-              onRowClick={this.options.onRowClick}
               count={rowCount}
               columns={columns}
               page={page}

@@ -6,6 +6,9 @@ import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/
 class Example extends React.Component {
 
   getMuiTheme = () => createMuiTheme({
+    typography: {
+      useNextVariants: true,
+    },
     overrides: {
       MUIDataTable: {
         root: {
@@ -31,7 +34,7 @@ class Example extends React.Component {
         options: {
           filter: true,
         }
-      },      
+      },
       {
         name: "Title",
         options: {
@@ -56,7 +59,7 @@ class Example extends React.Component {
           filter: true,
           sort: false
         }
-      }      
+      }
     ];
 
     const data = [
